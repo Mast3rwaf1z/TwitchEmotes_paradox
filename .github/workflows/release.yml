@@ -1,0 +1,43 @@
+name: Build Zips for TOC Variants
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-zips:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Find TOC variants and zip
+        run: |
+          mkdir zips
+          for toc_file in TwitchEmotes_paradox.*.toc; do
+              [ "$toc_file" = "TwitchEmotes_paradox.toc" ] && continue
+
+              base_name=$(basename "$toc_file" .toc)
+              zip_name="zips/${base_name}.zip"
+
+              cp "$toc_file" TwitchEmotes_paradox.toc
+              zip -r "$zip_name" . -x "zips/*"
+              git restore TwitchEmotes_paradox.toc
+          done
+
+      - name: Upload all zip files as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-zips
+          path: zips/
+
+      - name: Create release and upload zips
+        if: github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Automated Build - ${{ github.sha }}"
+          tag_name: "build-${{ github.run_number }}"
+          files: zips/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
