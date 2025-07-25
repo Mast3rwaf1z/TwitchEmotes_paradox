@@ -1,0 +1,10 @@
+## Interface: 40401
+## Title: |TInterface\Addons\TwitchEmotes_paradox\Emotes\Vex:0|tTwitch Emotes: PARADOX|TInterface\Addons\TwitchEmotes_paradox\Emotes\Vex:0|t
+## IconTexture: Interface\AddOns\TwitchEmotes\Emotes\1337.tga
+## Author: Skademanden - Argent Dawn (EU)
+## Notes: Modifies the popular twitch emotes addon
+## Version: v2
+## SavedVariables: Emoticons_Settings, TwitchEmoteStatistics
+## Dependencies: TwitchEmotes, TwitchEmotes_Giga
+
+Main.lua
