@@ -9,7 +9,10 @@ local paradox_emotes = {
     ["BigPogCrash"] = prefix .. "PogCrash.tga:64:64",
     ["Amogus"] = prefix .. "Amogus.tga:20:20",
     ["SIRE"] = prefix .. "SIRE.tga:40:60",
-    ["frick"] = prefix .. "frick.tga:28:28"
+    ["frick"] = prefix .. "frick.tga:28:28",
+    ["YOUKNOWWHOELSE"] = prefix .. "muscleman.tga:28:28",
+    ["goku"] = prefix .. "goku.tga:28:28",
+    ["AAAA"] = prefix .. "AAAA.tga:28:28"
 }
 
 
