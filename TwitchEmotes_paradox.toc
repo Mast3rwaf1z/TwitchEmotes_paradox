@@ -3,7 +3,7 @@
 ## IconTexture: Interface\AddOns\TwitchEmotes\Emotes\1337.tga
 ## Author: Skademanden - Argent Dawn (EU)
 ## Notes: Modifies the popular twitch emotes addon
-## Version: v1
+## Version: v0.0.2
 ## Dependencies: TwitchEmotes, TwitchEmotes_Giga
 
 Main.lua
