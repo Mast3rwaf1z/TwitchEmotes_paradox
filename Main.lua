@@ -1,9 +1,14 @@
 local prefix = "Interface\\AddOns\\TwitchEmotes_paradox\\Emotes\\"
 
 local paradox_emotes = {
-    ["Vex"] = prefix .. "Vex.tga:64:64",
-    ["SmallVex"] = prefix .. "Vex.tga:16:16",
-    ["CROW"] = prefix .."CROW.tga:64:64"
+    ["BigVex"] = prefix .. "Vex.tga:64:64",
+    ["Vex"] = prefix .. "Vex.tga:16:16",
+    ["WideVex"] = prefix .. "Vex.tga:32:128",
+    ["Crow"] = prefix .."CROW.tga:64:64",
+    ["PogCrash"] = prefix .. "PogCrash.tga:16:16",
+    ["BigPogCrash"] = prefix .. "PogCrash.tga:64:64",
+    ["Amogus"] = prefix .. "Amogus.tga:20:20",
+    ["SIRE"] = prefix .. "SIRE.tga:40:60"
 }
 
 
