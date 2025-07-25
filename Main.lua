@@ -12,10 +12,6 @@ function paradox_table_length(T)
   return count
 end
 
-local function paradox_init_suggestions(paradox_suggestions)
-    judhead_initsuggestions(paradox_suggestions)
-end
-
 local function paradox_main() 
     print("Hello from Custom Paradox Twitch Emotes by Skademanden")
 
@@ -36,11 +32,10 @@ local function paradox_main()
 
     table.insert(TwitchEmotes_dropdown_options, dropdown)
 
-    paradox_init_suggestions(suggestions)
+    judhead_initsuggestions(suggestions)
 
     print("Successfully added " .. paradox_table_length(paradox_emotes) .. " new emotes through Skademanden's extra addon!")
 end
 
 
 paradox_main()
-
