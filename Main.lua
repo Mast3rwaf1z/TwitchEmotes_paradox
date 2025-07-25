@@ -33,6 +33,8 @@ local function paradox_main()
 
     table.insert(TwitchEmotes_dropdown_options, dropdown)
 
+    -- This is so stupid, but it works
+    -- Should probably be replaced with a generic reloader so other people don't have to go through this...
     judhead_initsuggestions(suggestions)
 
     print("Successfully added " .. paradox_table_length(paradox_emotes) .. " new emotes through Skademanden's extra addon!")
