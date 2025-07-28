@@ -53,6 +53,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload zips to CurseForge
+        if: github.ref == 'refs/heads/master'
         env:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
