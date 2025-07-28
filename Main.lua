@@ -13,7 +13,8 @@ local paradox_emotes = {
     ["YOUKNOWWHOELSE"] = prefix .. "muscleman.tga:28:28",
     ["goku"] = prefix .. "goku.tga:28:28",
     ["AAAA"] = prefix .. "AAAA.tga:28:28",
-    ["GLYPHA"] = prefix .. "GLYPHA.tga:28:28"
+    ["GLYPHA"] = prefix .. "GLYPHA.tga:28:28",
+    ["hugs"] = prefix .. "hugs.tga:28:28"
 }
 
 TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 112, ["frameHeight"] = 112, ["imageWidth"]=112, ["imageHeight"]=10528, ["framerate"] = 50}
@@ -22,6 +23,11 @@ function paradox_table_length(T)
   local count = 0
   for _ in pairs(T) do count = count + 1 end
   return count
+end
+
+function paradox_suggestion_reloader(suggestions)
+    -- I'll finish some other time
+    judhead_initsuggestions(suggestions)
 end
 
 local function paradox_main() 
@@ -46,7 +52,7 @@ local function paradox_main()
 
     -- This is so stupid, but it works
     -- Should probably be replaced with a generic reloader so other people don't have to go through this...
-    judhead_initsuggestions(suggestions)
+    paradox_suggestion_reloader(suggestions)
 
     print("Successfully added " .. paradox_table_length(paradox_emotes) .. " new emotes through Skademanden's extra addon!")
 end
