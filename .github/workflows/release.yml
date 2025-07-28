@@ -61,7 +61,7 @@ jobs:
                 -F "metadata={
                   \"displayName\": \"${DISPLAY_NAME}\",
                   \"gameVersions\": [${GAME_VERSION_ID}],
-                  \"releaseType\": \"release\",
+                  \"releaseType\": \"beta\",
                   \"changelog\": \"Automated upload via GitHub Actions\",
                   \"changelogType\": \"markdown\"
                 }"
