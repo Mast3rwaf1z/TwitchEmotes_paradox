@@ -22,7 +22,7 @@ jobs:
               zip_name="zips/${base_name}.zip"
 
               cp "$toc_file" TwitchEmotes_paradox.toc
-              zip -r "$zip_name" . -x "zips/*"
+              zip -r "$zip_name" . -x "zips/*" ".git/*" ".git"
               git restore TwitchEmotes_paradox.toc
           done
 
