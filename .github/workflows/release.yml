@@ -51,9 +51,9 @@ jobs:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
           PROJECT_ID=1313724
-          GAME_VERSION_ID=5.5.0
+          GAME_VERSION_ID=12975
           for zip in zips/*.zip; do
-              curl -X POST https://minecraft.curseforge.com/api/v1/mods/${PROJECT_ID}/files \
+              curl -X POST https://wow.curseforge.com/api/v1/addons/${PROJECT_ID}/files \
               -H "x-api-token: ${API_TOKEN}" \
               -F "file=@${zip}" \
               -F "gameVersions=${GAME_VERSION_ID}" \
