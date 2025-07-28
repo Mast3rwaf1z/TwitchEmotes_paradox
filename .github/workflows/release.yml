@@ -28,7 +28,6 @@ jobs:
 
               cp "$toc_file" TwitchEmotes_paradox.toc
               zip -r "$versioned_name" . -x "zips/*" ".git/*" ".git"
-              git restore TwitchEmotes_paradox.toc
           done
 
       - name: Upload zip artifacts
