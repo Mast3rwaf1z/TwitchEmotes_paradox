@@ -7,8 +7,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-zips:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        config:
+          - suffix: classic
+            interface: 40401
+            game_version: 12975
+          - suffix: retail
+            interface: 110107
+            game_version: 13203
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -16,41 +26,33 @@ jobs:
       - name: Set version (short commit hash)
         id: vars
         run: echo "version=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Build zip files
+      
+      - name: Generate TOC File
         run: |
-          mkdir zips
-          for toc_file in TwitchEmotes_paradox-*.toc; do
-              [ "$toc_file" = "TwitchEmotes_paradox.toc" ] && continue
+          mkdir -p build/TwitchEmotes_paradox
+          bash generateToc.sh ${{ matrix.config.interface }} ${{ steps.vars.outputs.version }}
 
-              base_name=$(basename "$toc_file" .toc)
-              versioned_name="zips/${base_name}-${{ steps.vars.outputs.version }}.zip"
+      - name: Copy files and generate zip
+        run: |
+          rsync -a --exclude='out' --exclude='.git' ./ build/TwitchEmotes_paradox
 
-              cp "$toc_file" TwitchEmotes_paradox.toc
-              mkdir -p build/TwitchEmotes_paradox
-              rsync -a --exclude 'zips' --exclude '.git' ./ build/TwitchEmotes_paradox/
-              cp "$toc_file" build/TwitchEmotes_paradox/TwitchEmotes_paradox.toc
-              cd build
-              zip -r "../$versioned_name" TwitchEmotes_paradox
-              cd ..
-              rm -rf build
-          done
+          mkdir -p out
+          ZIP_NAME="TwitchEmotes_paradox-${{ matrix.config.suffix }}-${{ steps.vars.outputs.version }}.zip"
+          ZIP_PATH="out/$ZIP_NAME"
 
-      - name: Upload zip artifacts
+          cd build
+          zip -r "../$ZIP_PATH" TwitchEmotes_paradox
+          cd ..
+          rm -rf build
+          
+          echo "zip_path=$ZIP_PATH" >> $GITHUB_ENV
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: all-zips
-          path: zips/
-
-      - name: Create GitHub release and upload zips
-        if: github.ref == 'refs/heads/master'
-        uses: softprops/action-gh-release@v2
-        with:
-          name: "Build ${{ steps.vars.outputs.version }}"
-          tag_name: "build-${{ steps.vars.outputs.version }}"
-          files: zips/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ env.zip_name }}
+          path: ${{ env.zip_path }}
 
       - name: Upload zips to CurseForge
         if: github.ref == 'refs/heads/master'
@@ -58,19 +60,13 @@ jobs:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
           PROJECT_ID=1313724
-          GAME_VERSION_ID=12975
-          for zip in zips/*.zip; do
-              DISPLAY_NAME=$(basename "$zip" .zip)
-
-              curl -X POST "https://wow.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
-                -H "x-api-token: ${API_TOKEN}" \
-                -F "file=@${zip}" \
-                -F "metadata={
-                  \"displayName\": \"${DISPLAY_NAME}\",
-                  \"gameVersions\": [${GAME_VERSION_ID}],
-                  \"releaseType\": \"beta\",
-                  \"changelog\": \"Automated upload via GitHub Actions\",
-                  \"changelogType\": \"markdown\"
-                }"
-          done
-
+          curl -X POST "https://wow.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
+            -H "x-api-token: ${API_TOKEN}" \
+            -F "file=@${{ env.zip_path }}" \
+            -F "metadata={
+              \"displayName\": \"${{ env.zip_name }}\",
+              \"gameVersions\": [${{ matrix.config.game_version }}],
+              \"releaseType\": \"beta\",
+              \"changelog\": \"Automated beta build ${{ steps.vars.outputs.version }}\",
+              \"changelogType\": \"markdown\"
+            }"
