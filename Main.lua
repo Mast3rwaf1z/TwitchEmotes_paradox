@@ -12,9 +12,11 @@ local paradox_emotes = {
     ["frick"] = prefix .. "frick.tga:28:28",
     ["YOUKNOWWHOELSE"] = prefix .. "muscleman.tga:28:28",
     ["goku"] = prefix .. "goku.tga:28:28",
-    ["AAAA"] = prefix .. "AAAA.tga:28:28"
+    ["AAAA"] = prefix .. "AAAA.tga:28:28",
+    ["GLYPHA"] = prefix .. "GLYPHA.tga:28:28"
 }
 
+TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 112, ["frameHeight"] = 112, ["imageWidth"]=112, ["imageHeight"]=10528, ["framerate"] = 50}
 
 function paradox_table_length(T)
   local count = 0
