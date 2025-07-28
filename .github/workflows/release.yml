@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build-zips:
@@ -19,7 +20,7 @@ jobs:
       - name: Build zip files
         run: |
           mkdir zips
-          for toc_file in TwitchEmotes_paradox.*.toc; do
+          for toc_file in TwitchEmotes_paradox-*.toc; do
               [ "$toc_file" = "TwitchEmotes_paradox.toc" ] && continue
 
               base_name=$(basename "$toc_file" .toc)
