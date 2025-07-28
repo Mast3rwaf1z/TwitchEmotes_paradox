@@ -1,0 +1,65 @@
+name: Build Zips for TOC Variants
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-zips:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set version (short commit hash)
+        id: vars
+        run: echo "version=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build zip files
+        run: |
+          mkdir zips
+          for toc_file in TwitchEmotes_paradox.*.toc; do
+              [ "$toc_file" = "TwitchEmotes_paradox.toc" ] && continue
+
+              base_name=$(basename "$toc_file" .toc)
+              versioned_name="zips/${base_name}-${{ steps.vars.outputs.version }}.zip"
+
+              cp "$toc_file" TwitchEmotes_paradox.toc
+              zip -r "$versioned_name" . -x "zips/*" ".git/*" ".git"
+              git restore TwitchEmotes_paradox.toc
+          done
+
+      - name: Upload zip artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-zips
+          path: zips/
+
+      - name: Create GitHub release and upload zips
+        if: github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Build ${{ steps.vars.outputs.version }}"
+          tag_name: "build-${{ steps.vars.outputs.version }}"
+          files: zips/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload zips to CurseForge
+        env:
+          API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
+        run: |
+          PROJECT_ID=1313724
+          GAME_VERSION_ID=5.5.0
+          for zip in zips/*.zip; do
+              curl -X POST https://minecraft.curseforge.com/api/v1/mods/${PROJECT_ID}/files \
+              -H "x-api-token: ${API_TOKEN}" \
+              -F "file=@${zip}" \
+              -F "gameVersions=${GAME_VERSION_ID}" \
+              -F "changelog=Automated upload via GitHub Actions" \
+              -F "changelogType=markdown" \
+              -F "displayName=$(basename "$zip")" \
+              -F "releaseType=1"
+          done
+
