@@ -28,7 +28,6 @@ jobs:
 
               cp "$toc_file" TwitchEmotes_paradox.toc
               zip -r "$versioned_name" . -x "zips/*" ".git/*" ".git"
-              git restore TwitchEmotes_paradox.toc
           done
 
       - name: Upload zip artifacts
@@ -52,15 +51,19 @@ jobs:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
           PROJECT_ID=1313724
-          GAME_VERSION_ID=5.5.0
+          GAME_VERSION_ID=12975
           for zip in zips/*.zip; do
-              curl -X POST https://minecraft.curseforge.com/api/v1/mods/${PROJECT_ID}/files \
-              -H "x-api-token: ${API_TOKEN}" \
-              -F "file=@${zip}" \
-              -F "gameVersions=${GAME_VERSION_ID}" \
-              -F "changelog=Automated upload via GitHub Actions" \
-              -F "changelogType=markdown" \
-              -F "displayName=$(basename "$zip")" \
-              -F "releaseType=1"
+              DISPLAY_NAME=$(basename "$zip" .zip)
+
+              curl -X POST "https://wow.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
+                -H "x-api-token: ${API_TOKEN}" \
+                -F "file=@${zip}" \
+                -F "metadata={
+                  \"displayName\": \"${DISPLAY_NAME}\",
+                  \"gameVersions\": [${GAME_VERSION_ID}],
+                  \"releaseType\": \"beta\",
+                  \"changelog\": \"Automated upload via GitHub Actions\",
+                  \"changelogType\": \"markdown\"
+                }"
           done
 
