@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   build-zips:
@@ -13,43 +12,46 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Find TOC variants and zip
+      - name: Set version (short commit hash)
+        id: vars
+        run: echo "version=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build zip files
         run: |
           mkdir zips
           for toc_file in TwitchEmotes_paradox.*.toc; do
               [ "$toc_file" = "TwitchEmotes_paradox.toc" ] && continue
 
               base_name=$(basename "$toc_file" .toc)
-              zip_name="zips/${base_name}.zip"
+              versioned_name="zips/${base_name}-${{ steps.vars.outputs.version }}.zip"
 
               cp "$toc_file" TwitchEmotes_paradox.toc
-              zip -r "$zip_name" . -x "zips/*" ".git/*" ".git"
+              zip -r "$versioned_name" . -x "zips/*" ".git/*" ".git"
               git restore TwitchEmotes_paradox.toc
           done
 
-      - name: Upload all zip files as artifacts
+      - name: Upload zip artifacts
         uses: actions/upload-artifact@v4
         with:
           name: all-zips
           path: zips/
 
-      - name: Create release and upload zips
+      - name: Create GitHub release and upload zips
         if: github.ref == 'refs/heads/master'
         uses: softprops/action-gh-release@v2
         with:
-          name: "Automated Build - ${{ github.sha }}"
-          tag_name: "build-${{ github.run_number }}"
+          name: "Build ${{ steps.vars.outputs.version }}"
+          tag_name: "build-${{ steps.vars.outputs.version }}"
           files: zips/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload each zip to CurseForge
+      - name: Upload zips to CurseForge
         env:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
-          PROJECT_ID=1313724  # Replace with your project ID
-          GAME_VERSION_ID=5.5.5 # Replace with your game version ID
-
+          PROJECT_ID=1313724
+          GAME_VERSION_ID=5.5.0
           for zip in zips/*.zip; do
               curl -X POST https://minecraft.curseforge.com/api/v1/mods/${PROJECT_ID}/files \
               -H "x-api-token: ${API_TOKEN}" \
@@ -57,5 +59,7 @@ jobs:
               -F "gameVersions=${GAME_VERSION_ID}" \
               -F "changelog=Automated upload via GitHub Actions" \
               -F "changelogType=markdown" \
-              -F "displayName=$(basename "$zip")"
+              -F "displayName=$(basename "$zip")" \
+              -F "releaseType=1"
           done
+
