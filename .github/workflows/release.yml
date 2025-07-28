@@ -27,7 +27,13 @@ jobs:
               versioned_name="zips/${base_name}-${{ steps.vars.outputs.version }}.zip"
 
               cp "$toc_file" TwitchEmotes_paradox.toc
-              zip -r "$versioned_name" . -x "zips/*" ".git/*" ".git"
+              mkdir -p build/TwitchEmotes_paradox
+              rsync -a --exclude 'zips' --exclude '.git' ./ build/TwitchEmotes_paradox/
+              cp "$toc_file" build/TwitchEmotes_paradox/TwitchEmotes_paradox.toc
+              cd build
+              zip -r "../$versioned_name" TwitchEmotes_paradox
+              cd ..
+              rm -rf build
           done
 
       - name: Upload zip artifacts
