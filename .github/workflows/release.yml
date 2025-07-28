@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build-zips:
@@ -41,3 +42,20 @@ jobs:
           files: zips/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload each zip to CurseForge
+        env:
+          API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
+        run: |
+          PROJECT_ID=1313724  # Replace with your project ID
+          GAME_VERSION_ID=5.5.5 # Replace with your game version ID
+
+          for zip in zips/*.zip; do
+              curl -X POST https://minecraft.curseforge.com/api/v1/mods/${PROJECT_ID}/files \
+              -H "x-api-token: ${API_TOKEN}" \
+              -F "file=@${zip}" \
+              -F "gameVersions=${GAME_VERSION_ID}" \
+              -F "changelog=Automated upload via GitHub Actions" \
+              -F "changelogType=markdown" \
+              -F "displayName=$(basename "$zip")"
+          done
