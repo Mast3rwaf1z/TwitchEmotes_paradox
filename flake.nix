@@ -14,6 +14,7 @@
             packages = with pkgs; [
                 lua
                 ffmpeg
+                file
                 feh
                 (writeScriptBin "zip2tga" ''
                     #!${bash}/bin/bash

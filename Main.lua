@@ -1,23 +1,23 @@
 local prefix = "Interface\\AddOns\\TwitchEmotes_paradox\\Emotes\\"
 
 local paradox_emotes = {
-    ["BigVex"] = prefix .. "Vex.tga:64:64",
-    ["Vex"] = prefix .. "Vex.tga:16:16",
-    ["WideVex"] = prefix .. "Vex.tga:32:128",
-    ["Crow"] = prefix .."CROW.tga:64:64",
-    ["PogCrash"] = prefix .. "PogCrash.tga:16:16",
-    ["BigPogCrash"] = prefix .. "PogCrash.tga:64:64",
-    ["Amogus"] = prefix .. "Amogus.tga:20:20",
+    ["BigVex"] = prefix .. "Vex.tga:56:56",
+    ["Vex"] = prefix .. "Vex.tga:28:28",
+    ["WideVex"] = prefix .. "Vex.tga:28:56",
+    ["Crow"] = prefix .."CROW.tga:28:28",
+    ["PogCrash"] = prefix .. "PogCrash.tga:28:28",
+    ["BigPogCrash"] = prefix .. "PogCrash.tga:56:56",
+    ["Amogus"] = prefix .. "Amogus.tga:28:28",
     ["SIRE"] = prefix .. "SIRE.tga:40:60",
-    ["frick"] = prefix .. "frick.tga:28:28",
+    ["Xoy"] = prefix .. "frick.tga:28:28",
     ["YOUKNOWWHOELSE"] = prefix .. "muscleman.tga:28:28",
     ["goku"] = prefix .. "goku.tga:28:28",
     ["AAAA"] = prefix .. "AAAA.tga:28:28",
-    ["GLYPHA"] = prefix .. "GLYPHA.tga:28:28",
+    ["GLYPHA"] = prefix .. "GLYPHA.tga:56:56",
     ["hugs"] = prefix .. "hugs.tga:28:28"
 }
 
-TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 112, ["frameHeight"] = 112, ["imageWidth"]=112, ["imageHeight"]=10528, ["framerate"] = 50}
+TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 56, ["frameHeight"] = 56, ["imageWidth"]=56, ["imageHeight"]=5264, ["framerate"] = 50}
 
 function paradox_table_length(T)
   local count = 0
