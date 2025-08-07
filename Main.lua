@@ -33,7 +33,7 @@ function paradox_suggestion_reloader(suggestions)
 end
 
 local function paradox_main() 
-    print("Hello from Custom Paradox Twitch Emotes by Skademanden")
+    print("Hello from Custom Paradox Twitch Emotes by Skademanden!")
 
     local dropdown = { "Paradox" }
     local i = 1
