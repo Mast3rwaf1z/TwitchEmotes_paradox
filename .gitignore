@@ -1,3 +1,5 @@
 .direnv
 .envrc
 *.toc
+.env
+result
