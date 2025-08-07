@@ -13,11 +13,11 @@ jobs:
       matrix:
         config:
           - suffix: classic
-            interface: 40401
+            interface: 50500
             game_version: 12975
           - suffix: retail
             interface: 110200
-            game_version: 13203
+            game_version: 13433
 
     steps:
       - name: Checkout repo

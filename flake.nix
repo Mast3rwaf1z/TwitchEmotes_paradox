@@ -31,5 +31,29 @@
                 '')
             ];
         };
+        packages.${system}.default = pkgs.writeScriptBin "getVersions" ''
+            #!${pkgs.bash}/bin/bash
+            set -e
+            # load api key
+            echo "Loading API Key..."
+            source ./.env
+            if [ -z "$CURSEFORGE_API_KEY" ]; then
+                echo "Error! No API key found, please set CURSEFORGE_API_KEY to your API key in a .env file."
+                exit 1
+            fi
+
+            if [ -z "$1" ]; then
+                echo "Error, please give the desired version of the game as the first argument"
+                exit 1
+            fi
+
+            response=$(${pkgs.curl}/bin/curl https://wow.curseforge.com/api/game/versions -H "x-api-token: $CURSEFORGE_API_KEY" 2>/dev/null)
+
+            interface=$(echo "$response" | ${pkgs.jq}/bin/jq -r ".[] | select(.name == \"$1\") | .apiVersion")
+            game_version=$(echo "$response" | ${pkgs.jq}/bin/jq -r ".[] | select(.name == \"$1\") | .id")
+
+            echo "interface: $interface"
+            echo "game_version: $game_version"
+        '';
     };
 }
