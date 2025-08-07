@@ -60,6 +60,8 @@ jobs:
           API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
         run: |
           PROJECT_ID=1313724
+          CHANGELOG=$(git show -1 --no-patch)
+
           curl -X POST "https://wow.curseforge.com/api/projects/${PROJECT_ID}/upload-file" \
             -H "x-api-token: ${API_TOKEN}" \
             -F "file=@${{ env.zip_path }}" \
@@ -67,6 +69,6 @@ jobs:
               \"displayName\": \"${{ env.zip_name }}\",
               \"gameVersions\": [${{ matrix.config.game_version }}],
               \"releaseType\": \"beta\",
-              \"changelog\": \"Automated beta build ${{ steps.vars.outputs.version }}\",
+              \"changelog\": \"Automated beta build ${{ steps.vars.outputs.version }}\nCHANGELOG:\n\n$CHANGELOG\",
               \"changelogType\": \"markdown\"
             }"
