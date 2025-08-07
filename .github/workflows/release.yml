@@ -16,7 +16,7 @@ jobs:
             interface: 40401
             game_version: 12975
           - suffix: retail
-            interface: 110107
+            interface: 110200
             game_version: 13203
 
     steps:
