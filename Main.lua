@@ -17,7 +17,7 @@ local paradox_emotes = {
     ["hugs"] = prefix .. "hugs.tga:28:28",
     ["RakoCaught"] = prefix .. "RakoCaught.tga:28:280",
     ["SifCaught"] = prefix .. "SifCaught.tga:28:280",
-    ["misinformation"] = prefix .. "misinformation.tga:28:28",
+    ["misinformation"] = prefix .. "misinformation.tga:56:56",
     ["rakodead"] = prefix .. "rakodead.tga:28:28"
 }
 
