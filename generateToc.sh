@@ -28,7 +28,8 @@ metadata="{
     \"Author\": \"Skademanden - Argent Dawn (EU)\",
     \"Notes\": \"Modifies the popular twitch emotes addon\",
     \"Version\": \"$2\",
-    \"Dependencies\": \"TwitchEmotes, TwitchEmotes_Giga\"
+    \"Dependencies\": \"TwitchEmotes\",
+    \"OptionalDeps\": \"TwitchEmotes_Giga\"
 }"
 
 files="[

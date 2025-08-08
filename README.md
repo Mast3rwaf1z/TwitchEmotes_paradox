@@ -3,7 +3,7 @@ Small additional emotes for the Paradox Inc - Argent Dawn (EU) World of Warcraft
 
 ## Dependencies
 * TwitchEmotes
-* TwitchEmotes_Giga
+* Optionally: TwitchEmotes_Giga
 
 # Setup
 * Download zip

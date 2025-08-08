@@ -29,9 +29,61 @@ function paradox_table_length(T)
   return count
 end
 
+function paradox_table_concat(t1, t2)
+    t3 = {}
+    for key, value in pairs(t1) do
+        t3[key] = value
+    end
+    for key, value in pairs(t2) do
+        t3[key] = value
+    end
+    return t3
+end
+
 function paradox_suggestion_reloader(suggestions)
-    -- I'll finish some other time
-    judhead_initsuggestions(suggestions)
+    if (judhead_initsuggestions == nil) then
+        local combined = paradox_table_concat(AllTwitchEmoteNames, suggestions)
+        -- This loop is not mine, it is part of TwitchEmotes
+        for _, frameName in pairs(CHAT_FRAMES) do
+            local frame = _G[frameName]
+
+            local editbox = frame.editBox;
+            local suggestionList = combined;
+            local maxButtonCount = 20;
+
+            local autocompletesettings = {
+                perWord = true,
+                activationChar = ':',
+                closingChar = ':',
+                minChars = 2,
+                fuzzyMatch = true,
+                onSuggestionApplied = function(suggestion)
+                    UpdateEmoteStats(suggestion, true, false, false);
+                end,
+                renderSuggestionFN = Emoticons_RenderSuggestionFN,
+                suggestionBiasFN = function(suggestion, text)
+                    --Bias the sorting function towards the most autocompleted emotes
+                    if TwitchEmoteStatistics[suggestion] ~= nil then
+                        return TwitchEmoteStatistics[suggestion][1] * 5
+                    end
+                    return 0;
+                end,
+                interceptOnEnterPressed = true,
+                addSpace = true,
+                useTabToConfirm = Emoticons_Settings["AUTOCOMPLETE_CONFIRM_WITH_TAB"],
+                useArrowButtons = true,
+            }
+
+            SetupAutoComplete(editbox, suggestionList, maxButtonCount, autocompletesettings);
+        end
+    else
+        local i = paradox_table_length(suggestions)
+        for name, path in pairs(judhead_emotes) do
+            suggestions[i] = name
+            i = i + 1
+        end
+        judhead_initsuggestions(suggestions)
+    end
 end
 
 local function paradox_main() 
@@ -43,11 +95,6 @@ local function paradox_main()
     for name, path in pairs(paradox_emotes) do
         table.insert(dropdown, name)
         TwitchEmotes:AddEmote(name, name, path)
-        suggestions[i] = name
-        i = i + 1
-    end
-
-    for name, path in pairs(judhead_emotes) do
         suggestions[i] = name
         i = i + 1
     end
