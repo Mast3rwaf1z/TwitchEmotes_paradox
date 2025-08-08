@@ -16,7 +16,9 @@ local paradox_emotes = {
     ["GLYPHA"] = prefix .. "GLYPHA.tga:56:56",
     ["hugs"] = prefix .. "hugs.tga:28:28",
     ["RakoCaught"] = prefix .. "RakoCaught.tga:28:280",
-    ["SifCaught"] = prefix .. "SifCaught.tga:28:280"
+    ["SifCaught"] = prefix .. "SifCaught.tga:28:280",
+    ["misinformation"] = prefix .. "misinformation.tga:28:28",
+    ["rakodead"] = prefix .. "rakodead.tga:28:28"
 }
 
 TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 56, ["frameHeight"] = 56, ["imageWidth"]=56, ["imageHeight"]=5264, ["framerate"] = 50}
