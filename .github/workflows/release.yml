@@ -16,8 +16,8 @@ jobs:
             interface: 50500
             game_version: 12975
           - suffix: retail
-            interface: 110200
-            game_version: 13433
+            interface: 120000
+            game_version: 13924
 
     steps:
       - name: Checkout repo
