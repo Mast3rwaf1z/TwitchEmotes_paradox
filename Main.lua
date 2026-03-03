@@ -29,10 +29,24 @@ local paradox_emotes = {
     ["Bark"] = prefix .. "Bark.tga:28:28",
     ["PillowTime"] = prefix .. "PillowTime.tga:28:28",
     ["HelloThere"] = prefix .. "HelloThere.tga:28:94",
-    ["Xalatoes"] = prefix .. "Xalatoes.tga:28:36"
+    ["Xalatoes"] = prefix .. "Xalatoes.tga:28:36",
+    ["Shroomer"] = prefix .. "Shroomer.tga:28:25",
+    ["Rakoshere"] = prefix .. "Rakoshere.tga:28:28",
+    ["LICKA"] = prefix .. "LICKA.tga:56:28",
+    ["aaAAAAAaaaaaaaAAAAAaaaaaaaAAAAAa"] = prefix .. "aaAAAAAaaaaaaaAAAAAaaaaaaaAAAAAa.tga:56:28",
+    ["PISSIN"] = prefix .. "PISSIN.tga:56:28",
+    ["DvaAss"] = prefix .. "DvaAss.tga:56:28",
+    ["MeAndTheBoysWatchingDvaAss"] = prefix .. "MeAndTheBoysWatchingDvaAss.tga:56:28",
+    ["Looking"] = prefix .. "Looking.tga:28:28"
 }
 
 TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 56, ["frameHeight"] = 56, ["imageWidth"]=56, ["imageHeight"]=5264, ["framerate"] = 50}
+TwitchEmotes_animation_metadata[prefix .. "Rakoshere.tga"] = {["nFrames"] = 18, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"] = 32, ["imageHeight"] = 576, ["framerate"] = 10}
+TwitchEmotes_animation_metadata[prefix .. "LICKA.tga"] = {["nFrames"] = 58, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"] = 32, ["imageHeight"] = 2048, ["framerate"] = 30}
+TwitchEmotes_animation_metadata[prefix .. "aaAAAAAaaaaaaaAAAAAaaaaaaaAAAAAa.tga"] = {["nFrames"] = 3, ["frameWidth"] = 37, ["frameHeight"] = 32, ["imageWidth"] = 64, ["imageHeight"] = 128, ["framerate"] = 18}
+TwitchEmotes_animation_metadata[prefix .. "PISSIN.tga"] = {["nFrames"] = 10, ["frameWidth"] = 32, ["frameHeight"] = 32, ["imageWidth"] = 32, ["imageHeight"] = 512, ["framerate"] = 7}
+TwitchEmotes_animation_metadata[prefix .. "MeAndTheBoysWatchingDvaAss.tga"] = {["nFrames"] = 28, ["frameWidth"] = 64, ["frameHeight"] = 32, ["imageWidth"] = 64, ["imageHeight"] = 1024, ["framerate"] = 30}
+TwitchEmotes_animation_metadata[prefix .. "DvaAss.tga"] = {["nFrames"] = 59, ["frameWidth"] = 57, ["frameHeight"] = 32, ["imageWidth"] = 64, ["imageHeight"] = 2048, ["framerate"] = 30}
 
 function paradox_table_length(T)
   local count = 0
@@ -52,7 +66,7 @@ function paradox_table_concat(t1, t2)
 end
 
 function paradox_suggestion_reloader(suggestions)
-    if (judhead_initsuggestions == nil) then
+    if AllTwitchEmoteNames ~= nil and Emoticons_Settings ~= nil and Emoticons_RenderSuggestionFN ~= nil and Emoticons_Settings["ENABLE_AUTOCOMPLETE"] then
         local combined = paradox_table_concat(AllTwitchEmoteNames, suggestions)
         -- This loop is not mine, it is part of TwitchEmotes
         for _, frameName in pairs(CHAT_FRAMES) do
@@ -87,13 +101,6 @@ function paradox_suggestion_reloader(suggestions)
 
             SetupAutoComplete(editbox, suggestionList, maxButtonCount, autocompletesettings);
         end
-    else
-        local i = paradox_table_length(suggestions)
-        for name, path in pairs(judhead_emotes) do
-            suggestions[i] = name
-            i = i + 1
-        end
-        judhead_initsuggestions(suggestions)
     end
 end
 
@@ -117,6 +124,58 @@ local function paradox_main()
     paradox_suggestion_reloader(suggestions)
 
     print("Successfully added " .. paradox_table_length(paradox_emotes) .. " new emotes through Skademanden's extra addon!")
+end
+
+-- THIS FOLLOWING CODE IS NOT MINE, I FOUND IT HERE: https://github.com/LOADGAlAXX/TwitchEmotes_Hardcore/blob/676eb836c661ed2d71f1c9d62bf9af054924ae48/main.lua#L126
+local function escpattern(x)
+    return (x:gsub('%%', '%%%%')
+             :gsub('^%^', '%%^')
+             :gsub('%$$', '%%$')
+             :gsub('%(', '%%(')
+             :gsub('%)', '%%)')
+             :gsub('%.', '%%.')
+             :gsub('%[', '%%[')
+             :gsub('%]', '%%]')
+             :gsub('%*', '%%*')
+             :gsub('%+', '%%+')
+             :gsub('%-', '%%-')
+             :gsub('%?', '%%?'))
+end
+
+function TwitchEmotesAnimator_UpdateEmoteInFontString(fontstring, widthOverride, heightOverride)
+    local txt = fontstring:GetText();
+    if (txt ~= nil) then
+        for emoteTextureString in txt:gmatch("(|TInterface\\AddOns\\TwitchEmotes.-|t)") do
+            local imagepath = emoteTextureString:match("|T(Interface\\AddOns\\TwitchEmotes.-tga).-|t")
+
+            local animdata = TwitchEmotes_animation_metadata[imagepath];
+            if (animdata ~= nil) then
+                local framenum = TwitchEmotes_GetCurrentFrameNum(animdata);
+                local nTxt;
+		-- it is not an emote suggestion and it is a wide animated emote
+		if (widthOverride ~= 16 and animdata.frameWidth > 32) then
+                    nTxt = txt:gsub(escpattern(emoteTextureString),
+                                        TwitchEmotes_BuildEmoteFrameStringWithDimensions(
+                                        imagepath, animdata, framenum, animdata.frameHeight, animdata.frameWidth))
+		elseif (widthOverride ~= nil or heightOverride ~= nil) then
+                    nTxt = txt:gsub(escpattern(emoteTextureString),
+                                        TwitchEmotes_BuildEmoteFrameStringWithDimensions(
+                                        imagepath, animdata, framenum, widthOverride, heightOverride))
+                else
+                    nTxt = txt:gsub(escpattern(emoteTextureString),
+                                      TwitchEmotes_BuildEmoteFrameString(
+                                        imagepath, animdata, framenum))
+                end
+
+                -- If we're updating a chat message we need to alter the messageInfo as wel
+                if (fontstring.messageInfo ~= nil) then
+                    fontstring.messageInfo.message = nTxt
+                end
+                fontstring:SetText(nTxt);
+                txt = nTxt;
+            end
+        end
+    end
 end
 
 
