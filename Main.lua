@@ -41,7 +41,7 @@ local paradox_emotes = {
     ["DUNDUN"] = prefix .. "DUNDUN.tga:28:28",
     ["ALOO"] = prefix .. "ALOO.tga:28:28",
     ["DAWG"] = prefix .. "DAWG.tga:28:28",
-    ["yellcat"] = prefix .. "yellcat.tga:28:28"
+    ["pogcat"] = prefix .. "pogcat.tga:28:28"
 }
 
 TwitchEmotes_animation_metadata[prefix .. "GLYPHA.tga"] = {["nFrames"] = 94, ["frameWidth"] = 56, ["frameHeight"] = 56, ["imageWidth"]=56, ["imageHeight"]=5264, ["framerate"] = 50}
